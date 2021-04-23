@@ -2,6 +2,8 @@ exports.FILENAME_0             = 'foo.htm';
 exports.FILENAME_1             = 'bar.htm';
 exports.FILENAME_2             = 'baz.vue';
 exports.VUE_COMPONENT_FILENAME = 'GreetingsComponent.vue';
+exports.PUG_FILENAME           = 'index.pug';
+exports.PUG_INCLUDED_FILENAME  = 'common/footer.pug';
 
 
 exports.HTML0_CTX0 = `
@@ -299,6 +301,7 @@ exports.VUE_COMPONENT_WITH_GETTEXT_IN_TEMPLATE = `
     }
     </script>
 `;
+
 exports.POT_OUTPUT_VUE_COMPONENT_WITH_GETTEXT_IN_TEMPLATE = `msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=utf-8\\n"
@@ -317,6 +320,61 @@ msgstr ""
 #: GreetingsComponent.vue
 msgid "Link title"
 msgstr ""
+`;
+
+exports.VUE_COMPONENT_WITH_GETTEXT_IN_TEXT_AND_DATA = `
+<template>
+  <div>
+    <h1 v-translate>Test String 1</h1>
+    <h2>{{ testString }}</h2>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'TestComponent1',
+  data: () => ({
+    testString: this.$gettext('Test String 3')
+  })
+}
+</script>
+
+<style scoped>
+</style>
+`;
+
+exports.POT_OUTPUT_VUE_COMPONENT_WITH_GETTEXT_IN_TEXT_AND_DATA = `msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=utf-8\\n"
+"Content-Transfer-Encoding: 8bit\\n"
+"Generated-By: easygettext\\n"
+"Project-Id-Version: \\n"
+
+#: GreetingsComponent.vue
+msgid "Test String 1"
+msgstr ""
+
+#: GreetingsComponent.vue
+msgid "Test String 3"
+msgstr ""
+`;
+
+exports.CLI_OUTPUT_VUE_COMPONENT_WITH_GETTEXT_IN_TEXT_AND_DATA = `[easygettext] extracting: '{path}'
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=utf-8\\n"
+"Content-Transfer-Encoding: 8bit\\n"
+"Generated-By: easygettext\\n"
+"Project-Id-Version: \\n"
+
+#: {path}:2
+msgid "Test String 1"
+msgstr ""
+
+#: {path}:4
+msgid "Test String 3"
+msgstr ""
+
 `;
 
 exports.VUE_COMPONENT_EXPECTED_PROCESSED_SCRIPT_TAG = `export default {
@@ -933,6 +991,44 @@ msgid_plural "%{ n } Homes"
 msgstr[0] ""
 msgstr[1] ""
 `;
+
+
+exports.VUE_COMPONENT_FROM_JAVASCRIPT = `
+import Vue from 'vue'
+
+const TestComponent2 = Vue.component('TestComponent2', {
+  template: \`
+    <h1 v-translate>Test String 2</h1>
+  \`
+})
+
+export default TestComponent2
+`;
+
+exports.POT_OUTPUT_VUE_COMPONENT_FROM_JAVASCRIPT = `msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=utf-8\\n"
+"Content-Transfer-Encoding: 8bit\\n"
+"Generated-By: easygettext\\n"
+"Project-Id-Version: \\n"
+
+#: component.js
+msgid "Test String 2"
+msgstr ""
+`;
+
+exports.PUG_WITH_INCLUDE = `
+h1 hello
+include common/footer
+`;
+exports.PUG_COMMON_FOOTER = `
+footer
+  p Copyright E CORP
+`;
+exports.PUG_EXPECTED_PROCESSED_PUG_WITH_INCLUDE = `<h1>hello</h1>
+<footer>
+  <p>Copyright E CORP</p>
+</footer>`;
 
 exports.SCRIPT_GETTEXT_SEQUENCE_FILENAME = 'gettext_sequence.vue';
 exports.SCRIPT_GETTEXT_SEQUENCE = `

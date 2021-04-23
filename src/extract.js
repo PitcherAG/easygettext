@@ -1,8 +1,6 @@
 const cheerio = require('cheerio');
 const cheerioUtils = require('cheerio/lib/utils');
 const Pofile = require('pofile');
-const pug = require('pug');
-const {parse, compileTemplate} = require('@vue/compiler-sfc');
 const acorn = require('acorn');
 const walk = require('acorn-walk');
 const constants = require('./constants.js');
@@ -55,6 +53,7 @@ function preprocessScript(data, type) {
   const contents = [];
 
   if (type === 'vue') {
+    const {parse, compileTemplate} = require('@vue/compiler-sfc');
     const vueFile = parse(data).descriptor;
 
     if (vueFile.script) {
@@ -82,13 +81,14 @@ function preprocessScript(data, type) {
   return contents;
 }
 
-function preprocessTemplate(data, type = 'html') {
-  let templateData = null;
+function preprocessTemplate(data, type = 'html', filename = null) {
+  let templateData = data || '';
 
   if (data) {
     if (type === 'jade' || type === 'pug') {
+      const pug = require('pug');
       templateData = pug.render(data, {
-        filename: 'source.html',
+        filename: filename,
         pretty: true,
         require: () => {
         },
@@ -104,7 +104,7 @@ function preprocessTemplate(data, type = 'html') {
         let lang = $(this).attr('lang');
 
         if (lang) {
-          return preprocessTemplate($(this).html(), lang);
+          return preprocessTemplate($(this).html(), lang, filename);
         }
 
         return $(this).html().trim();
@@ -265,21 +265,21 @@ exports.Extractor = class Extractor {
     ];
   }
 
-  extract(filename, ext, content) {
-    const templateData = preprocessTemplate(content, ext);
+  extract(filename, ext, content, jsParser = 'auto') {
+    const templateData = preprocessTemplate(content, ext, filename);
 
     if (templateData) {
-      this.parse(filename, preprocessTemplate(content, ext));
+      this.parse(filename, templateData);
     }
 
     preprocessScript(content, ext).forEach(
       ({content: fileContent, lang}) => {
         if (lang === 'js') {
-          this.parseJavascript(filename, fileContent);
+          this.parseJavascript(filename, fileContent, jsParser);
         } else if (lang === 'ts') {
           this.parseTypeScript(filename, fileContent);
         }
-      }
+      },
     );
   }
 
