@@ -501,19 +501,24 @@ exports.Extractor = class Extractor {
     const reference = new exports.TranslationReference(filename, content, el.startIndex);
     const node = $(el);
 
-    if (this._hasTranslationToken(node)) {
-      if (filename.endsWith('.xml')) {
-        const textArray = [];
-        this.options.attributes.map((keyword) => {
-          if (node.attr(keyword) !== undefined) {
+    if (filename.endsWith('.xml')) {
+      const textArray = [];
+      const elementAttributes = ['label', 'sublabel', 'label-short'];
+      elementAttributes.map((keyword) => {
+        if (node.attr(keyword) !== undefined) {
+          const value = node.attr(keyword);
+          if (!value.trim().startsWith('{{') && !value.trim().endsWith('}}')) {
             textArray.push(node.attr(keyword));
           }
-        });
-        const newArray = textArray.map((element) => {
-          return new exports.NodeTranslationInfo(node, element, reference, this.options.attributes);
-        });
-        return newArray;
-      }
+        }
+      });
+      const newArray = textArray.map((element) => {
+        return new exports.NodeTranslationInfo(node, element, reference, elementAttributes);
+      });
+      return newArray;
+    }
+
+    if (this._hasTranslationToken(node)) {
       const text = this._getNodeHTML(node);
 
       if (text.length !== 0) {
