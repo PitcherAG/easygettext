@@ -509,6 +509,15 @@ exports.Extractor = class Extractor {
           const value = node.attr(keyword);
           if (!value.trim().startsWith('{{') && !value.trim().endsWith('}}')) {
             textArray.push(node.attr(keyword));
+          } else if (value.trim().startsWith('{{') && value.trim().endsWith('}}')) {
+            const exp = new RegExp('(?<=\').+?(?=\')', 'g');
+            const matches = value.match(exp);
+            if (matches) {
+              matches.forEach(match => {
+                const finalMatch = match.replace(/\\/, '');
+                textArray.push(finalMatch);
+              });
+            }
           }
         }
       });
