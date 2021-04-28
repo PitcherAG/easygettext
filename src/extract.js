@@ -503,8 +503,7 @@ exports.Extractor = class Extractor {
 
     if (filename.endsWith('.xml')) {
       const textArray = [];
-      const elementAttributes = ['label', 'sublabel', 'label-short'];
-      elementAttributes.map((keyword) => {
+      this.options.xmlAttributes.map((keyword) => {
         if (node.attr(keyword) !== undefined) {
           const value = node.attr(keyword);
           if (!value.trim().startsWith('{{') && !value.trim().endsWith('}}')) {
@@ -522,7 +521,7 @@ exports.Extractor = class Extractor {
         }
       });
       const newArray = textArray.map((element) => {
-        return new exports.NodeTranslationInfo(node, element, reference, elementAttributes);
+        return new exports.NodeTranslationInfo(node, element, reference, this.options.xmlAttributes);
       });
       return newArray;
     }
