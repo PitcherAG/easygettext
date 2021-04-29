@@ -205,6 +205,7 @@ exports.Extractor = class Extractor {
       startDelimiter: constants.DEFAULT_START_DELIMITER,
       endDelimiter: constants.DEFAULT_END_DELIMITER,
       attributes: constants.DEFAULT_ATTRIBUTES,
+      xmlAttributes: constants.DEFAULT_ATTRIBUTES,
       filters: constants.DEFAULT_FILTERS,
       filterPrefix: constants.DEFAULT_FILTER_PREFIX,
       lineNumbers: false,
