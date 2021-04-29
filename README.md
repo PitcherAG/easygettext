@@ -188,6 +188,25 @@ With a component that looks like this:
 
 The Javascript & HTML (or Pug) extraction within a Vue component works with the same rules as stated upper in this document.
 
+#### XML token extraction
+
+You can extract strings from .xml files. The extraction works the same way with the HTML token extraction.
+However we only extract the strings that are the values of the attributes in the xml elements we want.
+For example, for the below xml element we extract the value of the `label` attribute (`Welcome`).
+These attributes are declared in the `Extractor` constructor (`xmlAttributes`).
+
+```xml
+<title label="Welcome" />
+```
+
+We can also extract strings inside dynamic values (starting with `{{` and ending with `}}`)
+For example, for the below xml element we extract the strings `Admin` and `User` of the `label` attribute.
+Note that the strings must be between single quotes (' ') to be extracted.
+
+```xml
+<title label="{{ user.isAdmin ? 'Admin' : 'User' }}" />
+```
+
 
 #### Extracting from multiple files
 `gettext-extract` needs the exact file paths to work. If you want to extract gettext from all files in a folder, you can use the UNIX find command. Here is an example as a npm script:
