@@ -1017,6 +1017,110 @@ msgid "Test String 2"
 msgstr ""
 `;
 
+exports.XML_LABEL = `
+<title label="Test String" />
+`;
+
+exports.POT_OUTPUT_XML_LABEL = `msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=utf-8\\n"
+"Content-Transfer-Encoding: 8bit\\n"
+"Generated-By: easygettext\\n"
+"Project-Id-Version: \\n"
+
+#: app.xml
+msgid "Test String"
+msgstr ""
+`;
+
+exports.XML_SUBLABEL = `
+<title sublabel="Test String" />
+`;
+
+exports.POT_OUTPUT_XML_SUBLABEL = `msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=utf-8\\n"
+"Content-Transfer-Encoding: 8bit\\n"
+"Generated-By: easygettext\\n"
+"Project-Id-Version: \\n"
+
+#: app.xml
+msgid "Test String"
+msgstr ""
+`;
+
+exports.XML_LABEL_SHORT = `
+<title label-short="Test String" />
+`;
+
+exports.POT_OUTPUT_XML_LABEL_SHORT = `msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=utf-8\\n"
+"Content-Transfer-Encoding: 8bit\\n"
+"Generated-By: easygettext\\n"
+"Project-Id-Version: \\n"
+
+#: app.xml
+msgid "Test String"
+msgstr ""
+`;
+
+exports.XML_MULTIPLE = `
+<title label="String 1" sublabel="String 2" label-short="String 3" />
+`;
+
+exports.POT_OUTPUT_XML_MULTIPLE = `msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=utf-8\\n"
+"Content-Transfer-Encoding: 8bit\\n"
+"Generated-By: easygettext\\n"
+"Project-Id-Version: \\n"
+
+#: app.xml
+msgid "String 1"
+msgstr ""
+
+#: app.xml
+msgid "String 2"
+msgstr ""
+
+#: app.xml
+msgid "String 3"
+msgstr ""
+`;
+
+exports.XML_DYNAMIC = `
+<title label="{{ return 'Test String' }}" />
+`;
+
+exports.POT_OUTPUT_XML_DYNAMIC = `msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=utf-8\\n"
+"Content-Transfer-Encoding: 8bit\\n"
+"Generated-By: easygettext\\n"
+"Project-Id-Version: \\n"
+
+#: app.xml
+msgid "Test String"
+msgstr ""
+`;
+
+exports.XML_DYNAMIC_ESCAPE = `
+<title label="{{ return \'Test String\' }}" />
+`;
+
+exports.POT_OUTPUT_XML_DYNAMIC_ESCAPE = `msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=utf-8\\n"
+"Content-Transfer-Encoding: 8bit\\n"
+"Generated-By: easygettext\\n"
+"Project-Id-Version: \\n"
+
+#: app.xml
+msgid "Test String"
+msgstr ""
+`;
+
 exports.PUG_WITH_INCLUDE = `
 h1 hello
 include common/footer

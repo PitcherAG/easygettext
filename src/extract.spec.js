@@ -8,6 +8,48 @@ const path = require('path');
 
 describe('Extractor object', () => {
 
+  it('should output a correct POT file for element in xml file with label attribute', ()=> {
+    const extractor = new extract.Extractor({xmlAttributes: ['label']});
+    extractor.extract('app.xml', 'xml', fixtures.XML_LABEL);
+    expect(extractor.toString()).toEqual(fixtures.POT_OUTPUT_XML_LABEL);
+  });
+
+  it('should output a correct POT file for element in xml file with sublabel attribute', ()=> {
+    const extractor = new extract.Extractor({xmlAttributes: ['sublabel']});
+    extractor.extract('app.xml', 'xml', fixtures.XML_SUBLABEL);
+    expect(extractor.toString()).toEqual(fixtures.POT_OUTPUT_XML_SUBLABEL);
+  });
+
+  it('should output a correct POT file for element in xml file with label-short attribute', ()=> {
+    const extractor = new extract.Extractor({xmlAttributes: ['label-short']});
+    extractor.extract('app.xml', 'xml', fixtures.XML_LABEL_SHORT);
+    expect(extractor.toString()).toEqual(fixtures.POT_OUTPUT_XML_LABEL_SHORT);
+  });
+
+  it('should output a correct POT file for element in xml file with multiple attributes', ()=> {
+    const extractor = new extract.Extractor({xmlAttributes: ['label', 'sublabel', 'label-short']});
+    extractor.extract('app.xml', 'xml', fixtures.XML_MULTIPLE);
+    expect(extractor.toString()).toEqual(fixtures.POT_OUTPUT_XML_MULTIPLE);
+  });
+
+  it('should output a correct POT file for element in xml file with dynamic value', ()=> {
+    const extractor = new extract.Extractor({xmlAttributes: ['label']});
+    extractor.extract('app.xml', 'xml', fixtures.XML_DYNAMIC);
+    expect(extractor.toString()).toEqual(fixtures.POT_OUTPUT_XML_DYNAMIC);
+  });
+
+  it('should output a correct POT file for element in xml file with dynamic value and escape char', ()=> {
+    const extractor = new extract.Extractor({xmlAttributes: ['label']});
+    extractor.extract('app.xml', 'xml', fixtures.XML_DYNAMIC_ESCAPE);
+    expect(extractor.toString()).toEqual(fixtures.POT_OUTPUT_XML_DYNAMIC_ESCAPE);
+  });
+
+  it('should not output a correct POT file for element in xml file with wrong xml attributes', ()=> {
+    const extractor = new extract.Extractor({xmlAttributes: ['label']});
+    extractor.extract('app.xml', 'xml', fixtures.XML_SUBLABEL);
+    expect(extractor.toString()).not.toEqual(fixtures.POT_OUTPUT_LABEL);
+  });
+
   it('should output a correct POT file from the supplied HTML', () => {
     const extractor = new extract.Extractor();
     extractor.parse(fixtures.FILENAME_0, fixtures.HTML0_CTX0);
