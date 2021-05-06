@@ -504,7 +504,25 @@ exports.Extractor = class Extractor {
     if (filename.endsWith('.xml')) {
       const textArray = [];
       this.options.xmlAttributes.map((keyword) => {
-        if (node.attr(keyword) !== undefined) {
+        if (keyword === 'text' && node.html()) {
+          let element;
+          if (node[0].name === 'text') {
+            node[0].children.forEach(child => {
+              if (child.name === 'p') {
+                element = node.html().substring(
+                  node.html().indexOf('>') + 1,
+                  node.html().lastIndexOf('</p>'),
+                );
+              }
+            });
+          }
+
+          if (element) {
+            if (!element.trim().startsWith('{{') && !element.trim().endsWith('}}')) {
+              textArray.push(element);
+            }
+          }
+        } else if (node.attr(keyword) !== undefined) {
           const value = node.attr(keyword);
           if (!value.trim().startsWith('{{') && !value.trim().endsWith('}}')) {
             textArray.push(node.attr(keyword));
