@@ -502,19 +502,32 @@ exports.Extractor = class Extractor {
     const reference = new exports.TranslationReference(filename, content, el.startIndex);
     const node = $(el);
 
-    if (this._hasTranslationToken(node)) {
-      if (filename.endsWith('.xml')) {
-        const textArray = [];
-        this.options.attributes.map((keyword) => {
-          if (node.attr(keyword) !== undefined) {
+    if (filename.endsWith('.xml')) {
+      const textArray = [];
+      this.options.xmlAttributes.map((keyword) => {
+        if (node.attr(keyword) !== undefined) {
+          const value = node.attr(keyword);
+          if (!value.trim().startsWith('{{') && !value.trim().endsWith('}}')) {
             textArray.push(node.attr(keyword));
+          } else if (value.trim().startsWith('{{') && value.trim().endsWith('}}')) {
+            const exp = new RegExp('(?<=\').+?(?=\')', 'g');
+            const matches = value.match(exp);
+            if (matches) {
+              matches.forEach(match => {
+                const finalMatch = match.replace(/\\/, '');
+                textArray.push(finalMatch);
+              });
+            }
           }
-        });
-        const newArray = textArray.map((element) => {
-          return new exports.NodeTranslationInfo(node, element, reference, this.options.attributes);
-        });
-        return newArray;
-      }
+        }
+      });
+      const newArray = textArray.map((element) => {
+        return new exports.NodeTranslationInfo(node, element, reference, this.options.xmlAttributes);
+      });
+      return newArray;
+    }
+
+    if (this._hasTranslationToken(node)) {
       const text = this._getNodeHTML(node);
 
       if (text.length !== 0) {
