@@ -207,6 +207,12 @@ Note that the strings must be between single quotes (' ') to be extracted.
 <title label="{{ user.isAdmin ? 'Admin' : 'User' }}" />
 ```
 
+Also, you can extract the innerHTML content for elements in xml files.
+For example, for the below text element we extract the string (`Welcome`).
+
+```xml
+<text><p>Welcome</p></text>
+```
 
 #### Extracting from multiple files
 `gettext-extract` needs the exact file paths to work. If you want to extract gettext from all files in a folder, you can use the UNIX find command. Here is an example as a npm script:
