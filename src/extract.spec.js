@@ -50,6 +50,12 @@ describe('Extractor object', () => {
     expect(extractor.toString()).not.toEqual(fixtures.POT_OUTPUT_LABEL);
   });
 
+  it('should exclude text nodes enclosed in ignored XML tags', ()=> {
+    const extractor = new extract.Extractor({ignoreTextInXmlTags: ['query', 'reference-list']});
+    extractor.extract('app.xml', 'xml', fixtures.XML_IGNORED_TAGS);
+    expect(extractor.toString()).toEqual(fixtures.POT_OUTPUT_XML_IGNORED_TAGS);
+  });
+
   it('should output a correct POT file from the supplied HTML', () => {
     const extractor = new extract.Extractor();
     extractor.parse(fixtures.FILENAME_0, fixtures.HTML0_CTX0);
