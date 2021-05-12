@@ -1121,6 +1121,32 @@ msgid "Test String"
 msgstr ""
 `;
 
+exports.XML_IGNORED_TAGS = `
+<page>
+  <query set-global-context="users">
+    SELECT * FROM {{ User }} WHERE Id != '{{ user.Id }}' ORDER BY name
+  </query>
+  <reference-list field="PCH__User__c" referenced-entity="User">
+    SELECT * FROM {{ User }} WHERE Id != '{{ user.Id }}' ORDER BY name
+  </reference-list>
+  <p>
+    Valid text
+  </p>
+</page>
+`;
+
+exports.POT_OUTPUT_XML_IGNORED_TAGS = `msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=utf-8\\n"
+"Content-Transfer-Encoding: 8bit\\n"
+"Generated-By: easygettext\\n"
+"Project-Id-Version: \\n"
+
+#: app.xml
+msgid "Valid text"
+msgstr ""
+`;
+
 exports.PUG_WITH_INCLUDE = `
 h1 hello
 include common/footer
