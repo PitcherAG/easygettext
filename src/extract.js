@@ -507,7 +507,7 @@ exports.Extractor = class Extractor {
       const textArray = [];
       const element = node[0];
       const text = element.data ? element.data.trim() : '';
-      const findTextsInExpression = (value) => value.match(new RegExp("(?<=').+?(?=')", 'g'));
+      const findTextsInExpression = (value) => value.match(new RegExp("(?<=').+?(?=')", 'g')) || [];
       const { DEFAULT_DELIMITERS } = constants;
 
       if (element.type === 'text' && text && this.options.ignoreTextInXmlTags.indexOf(element.parent.name) === -1) {
