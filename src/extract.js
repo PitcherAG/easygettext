@@ -205,7 +205,8 @@ exports.Extractor = class Extractor {
       startDelimiter: constants.DEFAULT_START_DELIMITER,
       endDelimiter: constants.DEFAULT_END_DELIMITER,
       attributes: constants.DEFAULT_ATTRIBUTES,
-      xmlAttributes: constants.DEFAULT_ATTRIBUTES,
+      xmlAttributes: [],
+      ignoreTextInXmlTags: [],
       filters: constants.DEFAULT_FILTERS,
       filterPrefix: constants.DEFAULT_FILTER_PREFIX,
       lineNumbers: false,
@@ -504,45 +505,28 @@ exports.Extractor = class Extractor {
 
     if (filename.endsWith('.xml')) {
       const textArray = [];
-      this.options.xmlAttributes.map((keyword) => {
-        if (keyword === 'text' && node.html()) {
-          let element;
-          if (node[0].name === 'text') {
-            node[0].children.forEach(child => {
-              if (child.name === 'p') {
-                element = node.html().substring(
-                  node.html().indexOf('>') + 1,
-                  node.html().lastIndexOf('</p>'),
-                );
-              }
-            });
-          }
+      const element = node[0];
+      const text = element.data ? element.data.trim() : '';
+      const findTextsInExpression = (value) => value.match(new RegExp("(?<=').+?(?=')", 'g'));
+      const { DEFAULT_DELIMITERS } = constants;
 
-          if (element) {
-            if (!element.trim().startsWith('{{') && !element.trim().endsWith('}}')) {
-              textArray.push(element);
-            }
-          }
-        } else if (node.attr(keyword) !== undefined) {
-          const value = node.attr(keyword);
-          if (!value.trim().startsWith('{{') && !value.trim().endsWith('}}')) {
-            textArray.push(node.attr(keyword));
-          } else if (value.trim().startsWith('{{') && value.trim().endsWith('}}')) {
-            const exp = new RegExp('(?<=\').+?(?=\')', 'g');
-            const matches = value.match(exp);
-            if (matches) {
-              matches.forEach(match => {
-                const finalMatch = match.replace(/\\/, '');
-                textArray.push(finalMatch);
-              });
-            }
-          }
+      if (element.type === 'text' && text && this.options.ignoreTextInXmlTags.indexOf(element.parent.name) === -1) {
+        !text.startsWith(DEFAULT_DELIMITERS.start) && !text.endsWith(DEFAULT_DELIMITERS.end)
+          ? textArray.push(text)
+          : findTextsInExpression(text).forEach((match) => textArray.push(match.replace(/\\/, '')));
+      }
+
+      this.options.xmlAttributes.forEach((attribute) => {
+        if (node.attr(attribute)) {
+          const value = node.attr(attribute).trim();
+
+          !value.startsWith(DEFAULT_DELIMITERS.start) && !value.endsWith(DEFAULT_DELIMITERS.end)
+            ? textArray.push(node.attr(attribute))
+            : findTextsInExpression(value).forEach((match) => textArray.push(match.replace(/\\/, '')));
         }
       });
-      const newArray = textArray.map((element) => {
-        return new exports.NodeTranslationInfo(node, element, reference, this.options.xmlAttributes);
-      });
-      return newArray;
+
+      return textArray.map((e) => new exports.NodeTranslationInfo(node, e, reference, this.options.xmlAttributes));
     }
 
     if (this._hasTranslationToken(node)) {
