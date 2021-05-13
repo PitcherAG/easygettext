@@ -7,6 +7,7 @@ const constants = require('./constants.js');
 const jsExtractor = require('./javascript-extract.js');
 const tsExtractor = require('./typescript-extract.js');
 const flowRemoveTypes = require('flow-remove-types');
+const {findTextEntriesInXmlExpression} = require('./extract-utils.js');
 
 // Internal regular expression used to escape special characters
 const ESCAPE_REGEX = /[\-\[\]\/{}()*+?.\\^$|]/g;
@@ -504,25 +505,25 @@ exports.Extractor = class Extractor {
     const node = $(el);
 
     if (filename.endsWith('.xml')) {
+      const { DEFAULT_DELIMITERS } = constants;
       const textArray = [];
       const element = node[0];
       const text = element.data ? element.data.trim() : '';
-      const findTextsInExpression = (value) => value.match(new RegExp("(?<=').+?(?=')", 'g')) || [];
-      const { DEFAULT_DELIMITERS } = constants;
+      const isTemplateExpression = (t) => t.startsWith(DEFAULT_DELIMITERS.start) && t.endsWith(DEFAULT_DELIMITERS.end);
 
       if (element.type === 'text' && text && this.options.ignoreTextInXmlTags.indexOf(element.parent.name) === -1) {
-        !text.startsWith(DEFAULT_DELIMITERS.start) && !text.endsWith(DEFAULT_DELIMITERS.end)
-          ? textArray.push(text)
-          : findTextsInExpression(text).forEach((match) => textArray.push(match.replace(/\\/, '')));
+        isTemplateExpression(text)
+          ? findTextEntriesInXmlExpression(text).forEach((match) => textArray.push(match.replace(/\\/, '')))
+          : textArray.push(text);
       }
 
       this.options.xmlAttributes.forEach((attribute) => {
         if (node.attr(attribute)) {
           const value = node.attr(attribute).trim();
 
-          !value.startsWith(DEFAULT_DELIMITERS.start) && !value.endsWith(DEFAULT_DELIMITERS.end)
-            ? textArray.push(node.attr(attribute))
-            : findTextsInExpression(value).forEach((match) => textArray.push(match.replace(/\\/, '')));
+          isTemplateExpression(value)
+            ? findTextEntriesInXmlExpression(value).forEach((match) => textArray.push(match.replace(/\\/, '')))
+            : textArray.push(node.attr(attribute));
         }
       });
 

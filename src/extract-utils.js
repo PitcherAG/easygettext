@@ -37,6 +37,19 @@ function getTextEntries(filename, textEntries) {
   });
 }
 
+const findTextEntriesInXmlExpression = (exp) =>
+  (exp.match(/'(.*?)'/g) || []) // single quotes
+    .concat(exp.match(/`(.*?)`/g) || []) // backticks
+    .concat(exp.match(/"(.*?)"/g) || []) // double quotes
+    .reduce((acc, m) => {
+      if (/^[^a-zA-Z0-9]+$/.test(m)) return acc; // filter out matches that are only special characters
+
+      acc.push(m.slice(1, m.length - 1)); // drop single quotes, backticks or double quotes from text
+
+      return acc;
+    }, []);
+
 module.exports = {
   getTextEntries,
+  findTextEntriesInXmlExpression,
 };
